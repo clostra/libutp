@@ -204,7 +204,6 @@ uint64 callback_on_accept(utp_callback_arguments *a)
 uint64 callback_on_error(utp_callback_arguments *a)
 {
 	fprintf(stderr, "Error: %s\n", utp_error_code_names[a->error_code]);
-	utp_close(s);
 	s = NULL;
 	quit_flag = 1;
 	exit_code++;

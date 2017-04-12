@@ -113,8 +113,10 @@ CASSERT(8 == sizeof(int64), sizeof_int64_is_8)
 typedef const char * cstr;
 typedef char * str;
 
-#ifndef __cplusplus
+#if (!defined __cplusplus) && (__STDC_VERSION__ < 199901L)
 typedef uint8 bool;
+#else
+#include <stdbool.h>
 #endif
 
 #endif //__UTP_TYPES_H__

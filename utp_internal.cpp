@@ -3403,9 +3403,14 @@ void struct_utp_context::log(int level, utp_socket *socket, char const *fmt, ...
 	}
 
 	va_list va;
+	char buf[4096];
+
 	va_start(va, fmt);
-	log_unchecked(socket, fmt, va);
+	vsnprintf(buf, sizeof(buf), fmt, va);
+	buf[sizeof(buf) - 1] = '\0';
 	va_end(va);
+
+	utp_call_log(this, socket, (const byte *)buf);
 }
 
 void struct_utp_context::log_unchecked(utp_socket *socket, char const *fmt, ...)
@@ -3414,8 +3419,8 @@ void struct_utp_context::log_unchecked(utp_socket *socket, char const *fmt, ...)
 	char buf[4096];
 
 	va_start(va, fmt);
-	vsnprintf(buf, 4096, fmt, va);
-	buf[4095] = '\0';
+	vsnprintf(buf, sizeof(buf), fmt, va);
+	buf[sizeof(buf) - 1] = '\0';
 	va_end(va);
 
 	utp_call_log(this, socket, (const byte *)buf);

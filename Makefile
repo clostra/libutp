@@ -2,8 +2,8 @@ OBJS     = utp_internal.o utp_utils.o utp_hash.o utp_callbacks.o utp_api.o utp_p
 CFLAGS   = -Wall -DPOSIX -g -fno-exceptions $(OPT)
 OPT ?= -O3
 CXXFLAGS = $(CFLAGS) -fPIC -fno-rtti
-CC       = gcc
-CXX      = g++
+CC       ?= gcc
+CXX      ?= g++
 
 CXXFLAGS += -Wno-sign-compare
 CXXFLAGS += -fpermissive

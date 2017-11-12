@@ -2598,6 +2598,8 @@ utp_socket*	utp_create_socket(utp_context *ctx)
 	conn->got_fin_reached		= false;
 	conn->fin_sent				= false;
 	conn->fin_sent_acked		= false;
+	conn->read_shutdown			= false;
+	conn->close_requested		= false;
 	conn->fast_timeout			= false;
 	conn->rtt					= 0;
 	conn->retransmit_timeout	= 0;

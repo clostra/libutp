@@ -3416,24 +3416,23 @@ void utp_shutdown(UTPSocket *conn, int how)
 	conn->log(UTP_LOG_DEBUG, "UTP_shutdown(%d) in state:%s", how, statenames[conn->state]);
 	#endif
 
-	if (how & SHUT_RD) {
+	if (how != SHUT_WR) {
 		conn->read_shutdown = true;
 	}
-	if (!(how & SHUT_WR)) {
-		return;
-	}
-	switch(conn->state) {
-	case CS_CONNECTED:
-	case CS_CONNECTED_FULL:
-		if (!conn->fin_sent) {
-			conn->fin_sent = true;
-			conn->write_outgoing_packet(0, ST_FIN, NULL, 0);
+	if (how != SHUT_RD) {
+		switch(conn->state) {
+		case CS_CONNECTED:
+		case CS_CONNECTED_FULL:
+			if (!conn->fin_sent) {
+				conn->fin_sent = true;
+				conn->write_outgoing_packet(0, ST_FIN, NULL, 0);
+			}
+			break;
+		case CS_SYN_SENT:
+			conn->rto_timeout = utp_call_get_milliseconds(conn->ctx, conn) + min<uint>(conn->rto * 2, 60);
+		default:
+			break;
 		}
-		break;
-	case CS_SYN_SENT:
-		conn->rto_timeout = utp_call_get_milliseconds(conn->ctx, conn) + min<uint>(conn->rto * 2, 60);
-	default:
-		break;
 	}
 }
 

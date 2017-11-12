@@ -3138,9 +3138,9 @@ int utp_process_icmp_error(utp_context *ctx, const byte *buffer, size_t len, con
 			return 1;
 
 		default:
-			if (conn->fin_sent) {
+			if (conn->close_requested) {
 				#if UTP_DEBUG_LOGGING
-				ctx->log(UTP_LOG_DEBUG, NULL, "ICMP from %s after FIN sent, setting state to CS_DESTROY and causing error %d", addrfmt(addr, addrbuf), err);
+				ctx->log(UTP_LOG_DEBUG, NULL, "ICMP from %s after close, setting state to CS_DESTROY and causing error %d", addrfmt(addr, addrbuf), err);
 				#endif
 				conn->state = CS_DESTROY;
 			} else {

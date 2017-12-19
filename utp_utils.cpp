@@ -242,7 +242,7 @@ uint64 utp_default_get_udp_overhead(utp_callback_arguments *args) {
 }
 
 uint64 utp_default_get_random(utp_callback_arguments *args) {
-	return rand();
+	return random();
 }
 
 uint64 utp_default_get_milliseconds(utp_callback_arguments *args) {

@@ -2168,6 +2168,9 @@ size_t utp_process_incoming(UTPSocket *conn, const byte *packet, size_t len, boo
 		// Incoming connection completion
 		if ((pk_flags == ST_DATA || pk_flags == ST_FIN) && conn->state == CS_SYN_RECV) {
 			conn->state = CS_CONNECTED;
+			if (pk_flags != ST_FIN) {
+				utp_call_on_state_change(conn->ctx, conn, UTP_STATE_WRITABLE);
+			}
 		}
 
 		// Outgoing connection completion

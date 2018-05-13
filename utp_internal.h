@@ -27,6 +27,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
+#include <new>
 
 #include "utp.h"
 #include "utp_callbacks.h"

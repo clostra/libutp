@@ -2529,7 +2529,9 @@ void UTP_FreeAll(struct UTPSocketHT *utp_sockets) {
 	utp_hash_iterator_t it;
 	UTPSocketKeyData* keyData;
 	while ((keyData = utp_sockets->Iterate(it))) {
-		delete keyData->socket;
+		//delete keyData->socket;
+		keyData->socket->~UTPSocket();
+		free(keyData->socket);
 	}
 }
 
@@ -2589,7 +2591,9 @@ utp_socket*	utp_create_socket(utp_context *ctx)
 	assert(ctx);
 	if (!ctx) return NULL;
 
-	UTPSocket *conn = new UTPSocket; // TODO: UTPSocket should have a constructor
+	//UTPSocket *conn = new UTPSocket; // TODO: UTPSocket should have a constructor
+	UTPSocket *conn = (UTPSocket*)malloc(sizeof(UTPSocket));
+	new (conn) UTPSocket();
 
 	conn->state					= CS_UNINITIALIZED;
 	conn->ctx					= ctx;
@@ -3320,7 +3324,9 @@ void utp_check_timeouts(utp_context *ctx)
 			#if UTP_DEBUG_LOGGING
 			conn->log(UTP_LOG_DEBUG, "Destroying");
 			#endif
-			delete conn;
+			//delete conn;
+			conn->~UTPSocket();
+			free(conn);
 		}
 	}
 }

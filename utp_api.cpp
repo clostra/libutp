@@ -72,7 +72,9 @@ struct_utp_context::struct_utp_context()
 	memset(&context_stats, 0, sizeof(context_stats));
 	memset(callbacks, 0, sizeof(callbacks));
 	target_delay = CCONTROL_TARGET;
-	utp_sockets = new UTPSocketHT;
+	//utp_sockets = new UTPSocketHT;
+	utp_sockets = (UTPSocketHT*)malloc(sizeof(UTPSocketHT));
+	new (utp_sockets) UTPSocketHT();
 
 	callbacks[UTP_GET_UDP_MTU]      = &utp_default_get_udp_mtu;
 	callbacks[UTP_GET_UDP_OVERHEAD] = &utp_default_get_udp_overhead;
@@ -93,7 +95,9 @@ struct_utp_context::struct_utp_context()
 }
 
 struct_utp_context::~struct_utp_context() {
-	delete this->utp_sockets;
+	//delete this->utp_sockets;
+	this->utp_sockets->~UTPSocketHT();
+	free(this->utp_sockets);
 }
 
 utp_context* utp_init (int version)
@@ -101,13 +105,20 @@ utp_context* utp_init (int version)
 	assert(version == 2);
 	if (version != 2)
 		return NULL;
-	utp_context *ctx = new utp_context;
+	//utp_context *ctx = new utp_context;
+	utp_context *ctx = (utp_context*)malloc(sizeof(utp_context));
+	new (ctx) utp_context();
+
 	return ctx;
 }
 
 void utp_destroy(utp_context *ctx) {
 	assert(ctx);
-	if (ctx) delete ctx;
+	if (ctx) {
+		//delete ctx;
+		ctx->~utp_context();
+		free(ctx);
+	}
 }
 
 void utp_set_callback(utp_context *ctx, int callback_name, utp_callback_t *proc) {

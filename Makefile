@@ -4,6 +4,7 @@ OPT ?= -O3
 CXXFLAGS = $(CFLAGS) -fPIC -fno-rtti
 CC       ?= gcc
 CXX      ?= g++
+AR       ?= ar
 
 CXXFLAGS += -Wno-sign-compare
 CXXFLAGS += -fpermissive
@@ -29,7 +30,7 @@ libutp.so: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o libutp.so -shared $(OBJS)
 
 libutp.a: $(OBJS)
-	ar rvs libutp.a $(OBJS)
+	$(AR) rvs libutp.a $(OBJS)
 
 ucat: ucat.o libutp.so
 	$(CC) $(CFLAGS) -o ucat ucat.o -L. -lutp $(LDFLAGS)

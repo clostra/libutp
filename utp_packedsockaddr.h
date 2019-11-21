@@ -34,6 +34,8 @@ struct PACKED_ATTRIBUTE PackedSockAddr {
 		in6_addr _in6addr;	// For convenience
 	} _in;
 
+	uint32_t _in6_scope_id;
+
 	// Host byte order
 	uint16 _port;
 

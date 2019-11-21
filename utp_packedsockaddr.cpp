@@ -48,6 +48,8 @@ bool PackedSockAddr::operator==(const PackedSockAddr& rhs) const
 		return true;
 	if (_port != rhs._port)
 		return false;
+	if (_in6_scope_id != rhs._in6_scope_id)
+		return false;
 	return memcmp(_sin6, rhs._sin6, sizeof(_sin6)) == 0;
 }
 
@@ -57,7 +59,7 @@ bool PackedSockAddr::operator!=(const PackedSockAddr& rhs) const
 }
 
 uint32 PackedSockAddr::compute_hash() const {
-	return utp_hash_mem(&_in, sizeof(_in)) ^ _port;
+	return utp_hash_mem(&_in, sizeof(_in)) ^ _port ^ _in6_scope_id;
 }
 
 void PackedSockAddr::set(const SOCKADDR_STORAGE* sa, socklen_t len)
@@ -73,11 +75,13 @@ void PackedSockAddr::set(const SOCKADDR_STORAGE* sa, socklen_t len)
 		_sin6w[5] = 0xffff;
 		_sin4 = sin->sin_addr.s_addr;
 		_port = ntohs(sin->sin_port);
+		_in6_scope_id = 0;
 	} else {
 		assert(len >= sizeof(sockaddr_in6));
 		const sockaddr_in6 *sin6 = (sockaddr_in6*)sa;
 		_in._in6addr = sin6->sin6_addr;
 		_port = ntohs(sin6->sin6_port);
+		_in6_scope_id = sin6->sin6_scope_id;
 	}
 }
 
@@ -91,6 +95,7 @@ PackedSockAddr::PackedSockAddr(void)
 	SOCKADDR_STORAGE sa;
 	socklen_t len = sizeof(SOCKADDR_STORAGE);
 	memset(&sa, 0, len);
+	_in6_scope_id = 0;
 	sa.ss_family = AF_INET;
 	set(&sa, len);
 }
@@ -113,6 +118,7 @@ SOCKADDR_STORAGE PackedSockAddr::get_sockaddr_storage(socklen_t *len = NULL) con
 		sin6->sin6_family = family;
 		sin6->sin6_addr = _in._in6addr;
 		sin6->sin6_port = htons(_port);
+		sin6->sin6_scope_id = _in6_scope_id;
 	}
 	return sa;
 }

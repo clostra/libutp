@@ -2981,7 +2981,7 @@ int utp_process_udp(utp_context *ctx, const byte *buffer, size_t len, const stru
 			return 1;
 		}
 
-		if (ctx->utp_sockets->GetCount() > 3000) {
+		if (false) {//ctx->utp_sockets->GetCount() > 3000) {
 
 			#if UTP_DEBUG_LOGGING
 			ctx->log(UTP_LOG_DEBUG, NULL, "rejected incoming connection, too many uTP sockets %d", ctx->utp_sockets->GetCount());

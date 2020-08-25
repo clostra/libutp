@@ -36,16 +36,16 @@ int utp_call_on_firewall(utp_context *ctx, const struct sockaddr *address, sockl
 	return (int)ctx->callbacks[UTP_ON_FIREWALL](&args);
 }
 
-void utp_call_on_accept(utp_context *ctx, utp_socket *socket, const struct sockaddr *address, socklen_t address_len)
+int utp_call_on_accept(utp_context *ctx, utp_socket *socket, const struct sockaddr *address, socklen_t address_len)
 {
 	utp_callback_arguments args;
-	if (!ctx->callbacks[UTP_ON_ACCEPT]) return;
+	if (!ctx->callbacks[UTP_ON_ACCEPT]) return 0;
 	args.callback_type = UTP_ON_ACCEPT;
 	args.context = ctx;
 	args.socket = socket;
 	args.address = address;
 	args.address_len = address_len;
-	ctx->callbacks[UTP_ON_ACCEPT](&args);
+	return (int)ctx->callbacks[UTP_ON_ACCEPT](&args);
 }
 
 void utp_call_on_connect(utp_context *ctx, utp_socket *socket)

@@ -3015,7 +3015,14 @@ int utp_process_udp(utp_context *ctx, const byte *buffer, size_t len, const stru
 
 		conn->send_ack(true);
 
-		utp_call_on_accept(ctx, conn, to, tolen);
+		if (!utp_call_on_accept(ctx, conn, to, tolen)) {
+
+			#if UTP_DEBUG_LOGGING
+			ctx->log(UTP_LOG_DEBUG, NULL, "rejected incoming connection, UTP_ON_ACCEPT failed");
+			#endif
+
+			return 1;
+		}
 
 		// we report overhead after on_accept(), because the callbacks are setup now
 		utp_call_on_overhead_statistics(conn->ctx, conn, false, (len - read) + conn->get_udp_overhead(), header_overhead); // SYN

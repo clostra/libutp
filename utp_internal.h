@@ -97,7 +97,7 @@ struct UTPSocketKeyData {
 	utp_link_t link;
 };
 
-#define UTP_SOCKET_BUCKETS 79
+#define UTP_SOCKET_BUCKETS 7919
 #define UTP_SOCKET_INIT    15
 
 struct UTPSocketHT : utpHashTable<UTPSocketKey, UTPSocketKeyData> {
